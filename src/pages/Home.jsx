@@ -23,7 +23,7 @@ const Home = () => {
     };
     const toggleTodos = (index) =>{
         const newTodos = [...todos];
-        newTodos[index].completed = !newTodos[index.completed];
+        newTodos[index].completed = !newTodos[index].completed;
         setTodos(newTodos);
     }
 
