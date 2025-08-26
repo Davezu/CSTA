@@ -1,7 +1,6 @@
 import { useEffect, useState} from "react";
 import Home from "./Home";
 
-
 const List = () => {
     const [weather, setWeather]= useState(null);
 
