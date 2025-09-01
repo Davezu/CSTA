@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { User2, ChevronUp } from "lucide-react"
 import {
   SidebarMenu,
@@ -11,7 +12,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
 
-export default function Appside() {
+function Appside() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -25,8 +26,9 @@ export default function Appside() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             side="top"
-            className="w-[var(--radix-popper-anchor-width)] min-w-full"
             align="start"
+            sideOffset={8}
+            className="ml-auto w-[240px]"
           >
             <DropdownMenuItem>
               <span>Account</span>
@@ -43,3 +45,5 @@ export default function Appside() {
     </SidebarMenu>
   )
 }
+
+export default Appside

@@ -27,7 +27,7 @@ const dropdownItems = [
   { title: "Settings", url: "#", icon: Settings },
 ]
 
-export function AppSidebar() {
+function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
@@ -81,4 +81,6 @@ export function AppSidebar() {
       </SidebarFooter>
     </Sidebar>
   )
-} 
+}
+
+export { AppSidebar } 
