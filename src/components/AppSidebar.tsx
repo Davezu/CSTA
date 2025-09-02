@@ -15,12 +15,15 @@ import {
 } from "@/components/ui/sidebar"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import Appside from "@/components/ui/appside"
+import { ModeToggle } from './mode-toggle'
+import { Link } from 'react-router-dom'
+
 
 const items = [
-  { title: "Home", url: "#", icon: Home },
-  { title: "Inbox", url: "#", icon: Inbox },
-  { title: "Calendar", url: "#", icon: Calendar },
-  { title: "Search", url: "#", icon: Search },
+  { title: "Home", url: "/table-data", icon: Home },
+  { title: "Inbox", url: "/inbox", icon: Inbox },
+  { title: "Calendar", url: "/calendar", icon: Calendar },
+  { title: "Search", url: "/search", icon: Search },
 ]
 
 const dropdownItems = [
@@ -29,9 +32,14 @@ const dropdownItems = [
 
 function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar className="z-50">
       <SidebarHeader>
-        <h2 className="text-lg font-semibold">My App</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-semibold">CSTA LMS</h2>
+          <div className="ml-auto mt-0.5">
+            <ModeToggle />
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -41,10 +49,10 @@ function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
