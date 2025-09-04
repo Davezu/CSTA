@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
+import { Award, BookA, BookAIcon, BookCheck, Calendar, Home, Inbox, Search, Settings, Trophy } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -20,10 +20,11 @@ import { Link } from 'react-router-dom'
 
 
 const items = [
-  { title: "Home", url: "/table-data", icon: Home },
+  { title: "Home", url: "/Home", icon: Home },
   { title: "Inbox", url: "/inbox", icon: Inbox },
-  { title: "Calendar", url: "/calendar", icon: Calendar },
-  { title: "Search", url: "/search", icon: Search },
+  { title: "Course/Subjects ", url: "/Timer", icon: BookCheck },
+  { title: "Grades", url: "/search", icon: Award },
+  { title: "Deans Lister", url: "/table-data", icon: Trophy },
 ]
 
 const dropdownItems = [

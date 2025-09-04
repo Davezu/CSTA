@@ -14,13 +14,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 
-const components: { title: string; href: string; description: string }[] = [
-  {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
-    description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
-  },
+const components = [
+  { title: "Alert Dialog", href: "/docs/primitives/alert-dialog", description: "..." },
   {
     title: "Hover Card",
     href: "/docs/primitives/hover-card",
@@ -54,11 +49,11 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function NavigationMenuDemo() {
   return (
-    <NavigationMenu viewport={false}>
+    <NavigationMenu viewport={false} className="relative z-50">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Home</NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className="bg-popover text-popover-foreground border shadow-md rounded-md">
             <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
@@ -89,7 +84,7 @@ export function NavigationMenuDemo() {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Components</NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className="bg-popover text-popover-foreground border shadow-md rounded-md">
             <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
               {components.map((component) => (
                 <ListItem
@@ -110,7 +105,7 @@ export function NavigationMenuDemo() {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>List</NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className="bg-popover text-popover-foreground border shadow-md rounded-md">
             <ul className="grid w-[300px] gap-4">
               <li>
                 <NavigationMenuLink asChild>
@@ -143,7 +138,7 @@ export function NavigationMenuDemo() {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Simple</NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className="bg-popover text-popover-foreground border shadow-md rounded-md">
             <ul className="grid w-[200px] gap-4">
               <li>
                 <NavigationMenuLink asChild>
@@ -161,7 +156,7 @@ export function NavigationMenuDemo() {
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>With Icon</NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className="bg-popover text-popover-foreground border shadow-md rounded-md">
             <ul className="grid w-[200px] gap-4">
               <li>
                 <NavigationMenuLink asChild>
@@ -191,14 +186,10 @@ export function NavigationMenuDemo() {
   )
 }
 
-function ListItem({
-  title,
-  children,
-  href,
-  ...props
-}: React.ComponentPropsWithoutRef<"li"> & { href: string }) {
+function ListItem(props: any) {
+  const { title, children, href, ...liProps } = props
   return (
-    <li {...props}>
+    <li {...liProps}>
       <NavigationMenuLink asChild>
         <Link to={href}>
           <div className="text-sm leading-none font-medium">{title}</div>
@@ -210,3 +201,4 @@ function ListItem({
     </li>
   )
 }
+export default NavigationMenuDemo
