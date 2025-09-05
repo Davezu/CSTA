@@ -1,10 +1,10 @@
 import AppLayout from './shared/Components/Layouts/AppLayout';
 import { Routes, Route, Navigate, data } from "react-router-dom";
-import List from './pages/List';
-import Home from './pages/Home';
-import Timer from './pages/Nav';
+import List from './pages/list';
+import Home from './pages/home';
+import Timer from './pages/nav';
 import TableData from "./pages/table-data";
-import Nav from './pages/Nav'
+import Nav from './pages/nav'
 
 const App = () => {
   
