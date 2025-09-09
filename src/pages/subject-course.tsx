@@ -48,9 +48,18 @@ const course: Courses[] = [
 ]
 
 const sectionsByCourse: Record<string, { value: string; label: string }[]> = {
-  BSIT: [{ value: "4-2", label: "4-2" }, { value: "4-3", label: "4-3" }, { value: "4-4", label: "4-4" }],
-  BSHM: [{ value: "2-1", label: "2-2" }, { value: "2-2", label: "2-2" }],
-  BSTM: [{ value: "1-2", label: "1-1" }],
+  BSIT: [
+    { value: "4-2", label: "4-2" }, 
+    { value: "4-3", label: "4-3" }, 
+    { value: "4-4", label: "4-4" }
+  ],
+  BSHM: [
+    { value: "2-1", label: "2-2" }, 
+    { value: "2-2", label: "2-2" }
+  ],
+  BSTM: [
+    { value: "1-2", label: "1-1" }
+  ],
   "BSEd Major in English": [
     { value: "3-1", label: "3-1" },
     { value: "3-2", label: "3-2" },
@@ -66,6 +75,28 @@ const sectionsByCourse: Record<string, { value: string; label: string }[]> = {
     { value: "2-3", label: "2-3" },
   ],
 }
+  const subjectsByCourseSection: Record<string, { value: string; label: string }[]> = {
+    "BSIT-4-2": [
+      { value: "Web Development", label: "Web Development" },
+      { value: "Mobile App Development", label: "Mobile App Development" },
+      { value: "Database Management", label: "Database Management" },
+    ],
+    "BSIT-4-3": [
+      { value: "Network Security", label: "Network Security" },
+      { value: "Cloud Computing", label: "Cloud Computing" },
+      { value: "Software Engineering", label: "Software Engineering" },
+    ],
+    "BSIT-4-4": [
+      { value: "Artificial Intelligence", label: "Artificial Intelligence" },
+      { value: "Machine Learning", label: "Machine Learning" },
+      { value: "Data Science", label: "Data Science" },
+    ],
+    "BSEd Major in English-3-1": [
+      { value: "Literature", label: "Literature" },
+      { value: "Linguistics", label: "Linguistics" },
+      { value: "Creative Writing", label: "Creative Writing" },
+    ],
+  }
 
 function SubjectCourse() {
   const [courseOpen, setCourseOpen] = React.useState(false)
@@ -74,19 +105,29 @@ function SubjectCourse() {
   const [sectionOpen, setSectionOpen] = React.useState(false)
   const [sectionValue, setSectionValue] = React.useState("")
 
+  const [subjectOpen, setSubjectOpen] = React.useState(false)
+  const [subjectValue, setSubjectValue] = React.useState("")
+
+
   const availableSections = sectionsByCourse[courseValue] ?? []
+  const availableSubjects = subjectsByCourseSection[`${courseValue}-${sectionValue}`] ?? []
   const sectionDisabled = courseValue === ""
+  const subjectDisabled = sectionValue === ""
 
   return (
     <div className="p-4 space-y-4">
       <h1 className="text-2xl font-bold">Course/Subjects</h1>
-      <Popover open={courseOpen} onOpenChange={setCourseOpen}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+      {/*Course BTN*/}
+      <Popover 
+        open={courseOpen} 
+        onOpenChange={setCourseOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={courseOpen}
-              className="w-[240px] justify-between mr-4">
+            className="w-full justify-between">
             {courseValue
               ? course.find((c) => c.value === courseValue)?.label
               : "Select Course..."}
@@ -107,6 +148,7 @@ function SubjectCourse() {
                       setCourseValue(next)
                       setCourseOpen(false)
                       setSectionValue("")
+                      setSubjectValue("")
                     }}>
                     <CheckIcon
                       className={cn(
@@ -121,6 +163,7 @@ function SubjectCourse() {
           </Command>
         </PopoverContent>
       </Popover>
+      {/*Section BTN*/}
       <Popover
         open={!sectionDisabled && sectionOpen}
         onOpenChange={(open) => {
@@ -133,7 +176,7 @@ function SubjectCourse() {
             role="combobox"
             aria-expanded={sectionOpen}
             className={cn(
-              "w-[240px] justify-between",
+              "w-full justify-between",
               sectionDisabled && "cursor-not-allowed opacity-60"
             )}
             disabled={sectionDisabled}>
@@ -160,6 +203,7 @@ function SubjectCourse() {
                         const next = currentValue === sectionValue ? "" : currentValue
                         setSectionValue(next)
                         setSectionOpen(false)
+                        setSubjectValue("")
                       }}>
                       <CheckIcon
                         className={cn(
@@ -175,6 +219,61 @@ function SubjectCourse() {
           </Command>
         </PopoverContent>
       </Popover>
+      {/*Subject BTN*/}
+      <Popover
+        open={!subjectDisabled && subjectOpen}
+        onOpenChange={(open) => {
+          if (subjectDisabled) return
+          setSubjectOpen(open)
+        }}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={subjectOpen}
+            className={cn(
+              "w-full justify-between",
+              subjectDisabled && "cursor-not-allowed opacity-60"
+            )}
+            disabled={subjectDisabled}>
+            {subjectValue
+              ? availableSubjects.find((sj) => sj.value === subjectValue)?.label
+              : "Select Subject..."}
+            <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[240px] p-0">
+          <Command>
+            <CommandList>
+              {availableSubjects.length === 0 ? (
+                <CommandEmpty>
+                  {sectionDisabled ? "Pick a course first" : "No Section Found."}
+                </CommandEmpty>
+              ) : (
+                <CommandGroup>
+                  {availableSubjects.map((sj) => (
+                    <CommandItem
+                      key={sj.value}
+                      value={sj.value}
+                      onSelect={(currentValue) => {
+                        setSubjectValue(currentValue)
+                        setSubjectOpen(false)
+                      }}>
+                      <CheckIcon
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          subjectValue === sj.value ? "opacity-100" : "opacity-0"
+                        )}/>
+                      {sj.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+      </div>
     </div>
   )
 }
