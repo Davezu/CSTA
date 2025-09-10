@@ -28,7 +28,7 @@ const items = [
 ]
 
 const dropdownItems = [
-  { title: "Settings", url: "#", icon: Settings },
+  { title: "Settings", url: "/settings", icon: Settings },
 ]
 
 function AppSidebar() {

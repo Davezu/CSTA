@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-function Homepage() {
+function deansLister() {
   return (
     <Table>
   <TableCaption>A list of your recent invoices.</TableCaption>
@@ -68,4 +68,4 @@ function Homepage() {
   )
 }
 
-export default Homepage; 
+export default deansLister; 

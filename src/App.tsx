@@ -4,6 +4,7 @@ import Home from './pages/home';
 import TableData from "./pages/table-data";
 import Nav from './pages/nav'
 import Subject from './pages/subject-course';
+import Settings from './pages/settings';
 
 const App = () => {
   
@@ -13,7 +14,7 @@ const App = () => {
           <Route index element={<Home/>}/>
           <Route path="/table-data" element={<TableData/>}/>
           <Route path="/subject-course" element={<Subject/>}/>
-          <Route path="/nav" element={<Nav/>} />
+          <Route path="/settings" element={<Settings/>}/>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
     </Routes>

@@ -15,9 +15,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+import { Input } from "@/components/ui/input"
 type Courses = {
   value: string;
   label: string;
+}
+type Random = {
+  generate: string & number;
 }
 
 const course: Courses[] = [
@@ -247,7 +251,7 @@ function SubjectCourse() {
             <CommandList>
               {availableSubjects.length === 0 ? (
                 <CommandEmpty>
-                  {sectionDisabled ? "Pick a course first" : "No Section Found."}
+                  {sectionDisabled ? "Pick a course first" : "No Subject Found."}
                 </CommandEmpty>
               ) : (
                 <CommandGroup>
@@ -273,9 +277,9 @@ function SubjectCourse() {
           </Command>
         </PopoverContent>
       </Popover>
+      <Input placeholder="Enter Your Subject Code..."/>
       </div>
     </div>
   )
 }
-
 export default SubjectCourse
