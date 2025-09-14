@@ -1,8 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSideBar"
 import { Outlet } from "react-router-dom"
-import Nav from "@/pages/nav" 
-import Home from "@/pages/home"
 
 function AppLayout() {
   return (
