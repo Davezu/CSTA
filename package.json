@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "d": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -46,6 +46,7 @@
     "tailwindcss": "^4.1.12",
     "tw-animate-css": "^1.3.7",
     "typescript": "^5.9.2",
+    "typescript-eslint": "^8.43.0",
     "vite": "^7.0.4"
   }
 }

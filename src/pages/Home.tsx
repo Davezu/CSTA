@@ -32,7 +32,7 @@ function generate(): Post[] {
       author: 'Registrar Office',
       role: 'Admin',
       content: 'Class suspended na po guys!!.',
-      imageUrl: '/public/img/csa.PNG', // Working image URL
+      imageUrl: '/public/img/csa.PNG',
       createdAt: toIso(new Date(now.getTime() - 1000 * 60 * 60 * 2)),
       likes: 23,
       liked: false,
@@ -157,11 +157,9 @@ function Home() {
                     <p className="mt-1 whitespace-pre-wrap leading-relaxed text-sm sm:text-base break-words">{post.content}</p>
                 </div>
               </header>
-
               {post.imageUrl && (
                 <img src={post.imageUrl} alt="post" className="mb-3 w-full overflow-hidden rounded-md" />
               )}
-
                 <div className="mt-2 flex items-center gap-3 sm:gap-2">
                   <button
                     className={`flex items-center gap-1 rounded-full p-1.5 transition-colors sm:p-2 ${
@@ -169,21 +167,17 @@ function Home() {
                         ? 'text-red-500 hover:text-red-600'
                         : 'text-muted-foreground hover:text-red-500'
                   }`}
-                    onClick={() => likeToggle(post.id)}
-                >
+                    onClick={() => likeToggle(post.id)}>
                     <Heart
                       className={`h-3.5 w-3.5 transition-colors sm:h-4 sm:w-4 ${
                         post.liked ? 'fill-current' : ''
-                      }`}
-                    />
+                      }`}/>
                     <span className="text-xs sm:text-sm">{post.likes}</span>
                   </button>
-
                   <span className="text-muted-foreground text-xs sm:text-sm">
                   {post.comments.length} comment{post.comments.length !== 1 ? 's' : ''}
                 </span>
               </div>
-
                 <section className="mt-3 space-y-2 sm:space-y-3">
                   {visibleComments.map((c: Comment) => (
                   <div key={c.id} className="rounded-md bg-muted/40 p-2">
@@ -194,23 +188,20 @@ function Home() {
                       <p className="text-xs leading-snug sm:text-sm break-words">{c.text}</p>
                   </div>
                 ))}
-
                 {hiddenCount > 0 && (
                   <button
-                      className="text-muted-foreground hover:text-foreground text-xs sm:text-sm"
+                      className="text-muted-foreground hover:text-foreground text-xs sm:text-sm cursor-pointer"
                       onClick={() => expand(post.id)}>
                     {isExpanded ? 'Hide comments' : `View ${hiddenCount} more comment${hiddenCount > 1 ? 's' : ''}`}
                   </button>
                 )}
-
                   {isExpanded === true && (
                      <button 
-                      className="text-muted-foreground hover:text-foreground text-xs sm:text-sm"
+                      className="text-muted-foreground hover:text-foreground text-xs sm:text-sm cursor-pointer"
                       onClick={() => collapse(post.id)}>
                       Show less
                     </button>
                   )}
-
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
                   <input
                       className="bg-background border-input focus-visible:ring-ring h-8 w-full rounded-md border px-2 text-xs outline-none focus-visible:ring-2 sm:h-9 sm:px-3 sm:text-sm"
@@ -223,8 +214,7 @@ function Home() {
                   />
                   <button
                       className="bg-primary text-primary-foreground h-8 rounded-md px-3 text-xs cursor-pointer sm:h-9 sm:text-sm"
-                      onClick={() => addComments(post.id)}
-                  >
+                      onClick={() => addComments(post.id)}>
                     Comment
                   </button>
                 </div>

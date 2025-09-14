@@ -5,6 +5,7 @@ import TableData from "./pages/table-data";
 import Nav from './pages/nav'
 import Subject from './pages/subject-course';
 import Settings from './pages/settings';
+import List from './pages/list';
 
 const App = () => {
   
@@ -15,6 +16,7 @@ const App = () => {
           <Route path="/table-data" element={<TableData/>}/>
           <Route path="/subject-course" element={<Subject/>}/>
           <Route path="/settings" element={<Settings/>}/>
+          <Route path="/list" element={<List/>}/>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
     </Routes>
