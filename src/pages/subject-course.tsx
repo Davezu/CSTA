@@ -17,12 +17,15 @@ import {
 } from "@/components/ui/popover"
 
 import { Input } from "@/components/ui/input"
+type EnrolledSubject = {
+  id: number
+  subject: string
+  course: string
+  section: string
+}
 type Courses = {
   value: string;
   label: string;
-}
-type Random = {
-  generate: string | number;
 }
 
 const course: Courses[] = [
@@ -113,27 +116,31 @@ function SubjectCourse() {
 
   const [subjectOpen, setSubjectOpen] = React.useState(false)
   const [subjectValue, setSubjectValue] = React.useState("")
-  
-  const [enrolledSubjects, setEnrolledSubjects] = React.useState([])
-
+  const [enrolledSubjects, setEnrolledSubjects] = React.useState<EnrolledSubject[]>(() => {
+      const subjectData = localStorage.getItem("enrolledSubjects")
+      return subjectData ? (JSON.parse(subjectData) as EnrolledSubject[]) : []
+  })
+ 
+  React.useEffect(() => {
+      localStorage.setItem("enrolledSubjects", JSON.stringify(enrolledSubjects))
+  }, [enrolledSubjects])
+ 
   const handleJoinCourse = () => {
-    if (subjectValue && sectionValue && courseValue) {
-      const newSubject = {
-        id: Date.now(),
-        subject: subjectValue,
-        course: courseValue,
-        section: sectionValue
-      }
-      setEnrolledSubjects([...enrolledSubjects, newSubject])
-      
-      setSubjectValue("")
-      setSectionValue("")
-      setCourseValue("")
+    if (!subjectValue || !sectionValue || !courseValue) return
+    const newSubject: EnrolledSubject = {
+      id: Date.now(),
+      subject: subjectValue,
+      course: courseValue,
+      section: sectionValue,
     }
+    setEnrolledSubjects((prev) => [...prev, newSubject])
+    setSubjectValue("")
+    setSectionValue("")
+    setCourseValue("")
   }
 
-  const handleLeaveSubject = (id) => {
-    setEnrolledSubjects(enrolledSubjects.filter(subject => subject.id !== id))
+  const handleLeaveSubject = (id: number) => {
+    setEnrolledSubjects((prev) => prev.filter((subject) => subject.id !== id))
   }
 
 
@@ -372,8 +379,6 @@ function SubjectCourse() {
         <div className="div">
           {enrolledSubjects.map((view) =>(
             <div key={view.id}></div>
-
-
           ))}
         </div>
       </div>

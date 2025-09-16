@@ -32,7 +32,6 @@ function generate(): Post[] {
       author: 'Registrar Office',
       role: 'Admin',
       content: 'Class suspended na po guys!!.',
-      imageUrl: '/public/img/csa.PNG',
       createdAt: toIso(new Date(now.getTime() - 1000 * 60 * 60 * 2)),
       likes: 23,
       liked: false,
