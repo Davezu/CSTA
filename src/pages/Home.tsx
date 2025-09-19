@@ -119,7 +119,7 @@ function Home() {
   }
 
   return (
-    <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 -mt-8">
+    <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 -mt-2">
     <div className="mx-auto max-w-4xl">
         <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="text-lg font-semibold sm:text-xl">Announcements</h1>

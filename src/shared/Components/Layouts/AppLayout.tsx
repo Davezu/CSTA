@@ -4,14 +4,16 @@ import { Outlet } from "react-router-dom"
 
 function AppLayout() {
   return (
-    <div className="flex min-h-svh w-full">
+    <div className="flex h-svh w-full overflow-hidden">
       <SidebarProvider>
         <AppSidebar />
-        <main className="flex-1">
-          <div className="flex items-center gap-4 p-6 pb-0">
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex items-center gap-4 p-4 pb-2 flex-shrink-0">
             <SidebarTrigger />
           </div>
-          <Outlet />
+          <div className="flex-1 overflow-hidden">
+            <Outlet />
+          </div>
         </main>
       </SidebarProvider>
     </div>

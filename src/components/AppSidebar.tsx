@@ -23,7 +23,7 @@ const items = [
   { title: "Home", url: "/Home", icon: Home },
   { title: "Inbox", url: "/inbox", icon: Inbox },
   { title: "Course/Subjects ", url: "/subject-course", icon: BookCheck },
-  { title: "Grades", url: "/search", icon: Award },
+  { title: "Grades", url: "/grades", icon: Award },
   { title: "Deans Lister", url: "/table-data", icon: Trophy },
 ]
 

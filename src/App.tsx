@@ -2,10 +2,11 @@ import AppLayout from './shared/Components/Layouts/AppLayout';
 import { Routes, Route, Navigate } from "react-router-dom";
 import Home from './pages/home';
 import TableData from "./pages/table-data";
-import Nav from './pages/nav'
 import Subject from './pages/subject-course';
 import Settings from './pages/settings';
 import List from './pages/list';
+import Inbox from './pages/inbox'
+import Grades from './pages/grades';
 
 const App = () => {
   
@@ -13,6 +14,8 @@ const App = () => {
     <Routes>
       <Route path="/" element={<AppLayout/>}>
           <Route index element={<Home/>}/>
+          <Route path="/inbox" element={<Inbox/>}/>
+          <Route path="/grades" element={<Grades/>}/>
           <Route path="/table-data" element={<TableData/>}/>
           <Route path="/subject-course" element={<Subject/>}/>
           <Route path="/settings" element={<Settings/>}/>

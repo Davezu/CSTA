@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CheckIcon, ChevronsUpDownIcon, BookOpen, Users, Calendar, Plus,} from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { cn } from "@/lib/utils"
@@ -121,7 +121,7 @@ function SubjectCourse() {
       return subjectData ? (JSON.parse(subjectData) as EnrolledSubject[]) : []
   })
  
-  React.useEffect(() => {
+  useEffect(() => {
       localStorage.setItem("enrolledSubjects", JSON.stringify(enrolledSubjects))
   }, [enrolledSubjects])
  
