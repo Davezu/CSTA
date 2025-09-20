@@ -185,7 +185,6 @@ function Inbox() {
       setShowCompose(true)
       setReplyMode(true)
       setForwardMode(false)
-      // Find the username from the email sender
       const senderUser = mockUsers.find(user => user.fullName === selectedEmail.fromName)
       setComposeMessage({
         to: senderUser?.username || selectedEmail.fromName.toLowerCase().replace(/\s+/g, '_'),
@@ -210,7 +209,7 @@ function Inbox() {
 
   const handleSendMessage = () => {
     if (composeMessage.to && composeMessage.subject && composeMessage.content) {
-      // Find the recipient user
+      // Find recipient user
       const recipient = mockUsers.find(user => 
         user.username.toLowerCase() === composeMessage.to.toLowerCase() ||
         user.fullName.toLowerCase().includes(composeMessage.to.toLowerCase())
@@ -314,9 +313,13 @@ function Inbox() {
   }
 
   useEffect(() => {
-    const handleClickOutside = () => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (showMoreOptions) {
-        setShowMoreOptions(false)
+        const target = event.target as Element
+        const dropdownContainer = document.querySelector('[data-dropdown="more-options"]')
+        if (dropdownContainer && !dropdownContainer.contains(target)) {
+          setShowMoreOptions(false)
+        }
       }
     }
     document.addEventListener('click', handleClickOutside)
@@ -350,8 +353,7 @@ function Inbox() {
           placeholder="Search messages..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
+          className="pl-10"/>
       </div>
 
       {/* Main Content */}
@@ -368,8 +370,7 @@ function Inbox() {
                 onClick={() => {
                   setSelectedEmail(email)
                   handleMarkAsRead(email.id)
-                }}
-              >
+                }}>
                 <div onClick={(e) => handleStarToggle(email.id, e)}>
                   {email.isStarred ? (
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 cursor-pointer" />
@@ -429,55 +430,70 @@ function Inbox() {
                  <Button variant="ghost" size="sm" onClick={handleForward} className="cursor-pointer" title="Forward this message">
                    <Forward className="h-4 w-4" />
                  </Button>
-                 <div className="relative">
-                   <Button variant="ghost" size="sm" onClick={() => setShowMoreOptions(!showMoreOptions)} className="cursor-pointer" title="More options">
+                 <div className="relative" data-dropdown="more-options">
+                   <Button variant="ghost" size="sm" onClick={(e) => {
+                     e.stopPropagation()
+                     setShowMoreOptions(!showMoreOptions)
+                   }} className="cursor-pointer" title="More options">
                      <MoreHorizontal className="h-4 w-4" />
                    </Button>
                    
                    {/* More Options Dropdown */}
-                   {showMoreOptions && (
-                     <div className="absolute right-0 top-full mt-1 w-48 bg-card border rounded-lg shadow-lg z-10">
+                   {showMoreOptions &&(
+                     <div className="absolute right-0 top-full mt-1 w-48 bg-card border rounded-lg shadow-lg z-10" onClick={(e) => e.stopPropagation()}>
                        <div className="py-1">
                          <button
-                           onClick={() => handleMoreOptions('archive')}
-                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer"
-                         >
+                           onClick={(e) => {
+                             e.stopPropagation()
+                             handleMoreOptions('archive')
+                           }}
+                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer">
                            <Archive className="h-4 w-4" />
                            Archive
                          </button>
                          <button
-                           onClick={() => handleMoreOptions('delete')}
-                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer text-red-600"
-                         >
+                           onClick={(e) => {
+                             e.stopPropagation()
+                             handleMoreOptions('delete')
+                           }}
+                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer text-red-600">
                            <Trash2 className="h-4 w-4" />
                            Delete
                          </button>
                          <button
-                           onClick={() => handleMoreOptions('flag')}
-                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer"
-                         >
+                           onClick={(e) => {
+                             e.stopPropagation()
+                             handleMoreOptions('flag')
+                           }}
+                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer">
                            <Flag className="h-4 w-4" />
                            {selectedEmail?.isStarred ? 'Unflag' : 'Flag'}
                          </button>
                          <div className="border-t my-1"></div>
                          <button
-                           onClick={() => handleMoreOptions('copy')}
-                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer"
-                         >
+                           onClick={(e) => {
+                             e.stopPropagation()
+                             handleMoreOptions('copy')
+                           }}
+                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer">
                            <Copy className="h-4 w-4" />
                            Copy Content
                          </button>
                          <button
-                           onClick={() => handleMoreOptions('download')}
-                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer"
-                         >
+                           onClick={(e) => {
+                             e.stopPropagation()
+                             handleMoreOptions('download')
+                           }}
+                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer">
                            <Download className="h-4 w-4" />
                            Download
                          </button>
                          <button
-                           onClick={() => handleMoreOptions('print')}
-                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer"
-                         >
+                           onClick={(e) => {
+                             e.stopPropagation()
+                             handleMoreOptions('print')
+                           }}
+                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer">
                            <Printer className="h-4 w-4" />
                            Print
                          </button>
