@@ -16,14 +16,30 @@ import {
   Flag,
   Copy,
   Download,
-  Printer
+  Printer,
+  Bell,
+  Calendar,
+  AlertCircle,
+  TrendingUp,
+  Award,
+  Filter
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-interface Email {
+type NotificationType = 'email' | 'grade' | 'announcement' | 'deadline' | 'system'
+
+interface Notification {
   id: string
+  type: NotificationType
   from: string
   fromName: string
   subject: string
@@ -33,7 +49,11 @@ interface Email {
   isStarred: boolean
   hasAttachment: boolean
   content?: string
+  priority?: 'low' | 'medium' | 'high'
 }
+
+// Legacy interface for compatibility
+type Email = Notification
 
 interface ComposeMessage {
   to: string
@@ -60,9 +80,10 @@ const mockUsers: User[] = [
   { id: '8', username: 'prof_wilson', fullName: 'Prof. Wilson', role: 'teacher', isOnline: true }
 ]
 
-const mockEmails: Email[] = [
+const mockNotifications: Notification[] = [
   {
     id: '1',
+    type: 'deadline',
     from: 'admin@csta.edu',
     fromName: 'CSTA Administration',
     subject: 'Final Exam Schedule Update',
@@ -71,10 +92,12 @@ const mockEmails: Email[] = [
     isRead: false,
     isStarred: true,
     hasAttachment: true,
+    priority: 'high',
     content: 'Dear Students,\n\nPlease note the updated final exam schedule for this semester. The changes are as follows:\n\n- Computer Science 101: December 15, 2024 at 9:00 AM\n- Mathematics 201: December 16, 2024 at 1:00 PM\n- Physics 301: December 17, 2024 at 10:00 AM\n\nPlease review the attached schedule for complete details.\n\nBest regards,\nCSTA Administration'
   },
   {
     id: '2',
+    type: 'grade',
     from: 'registrar@csta.edu',
     fromName: 'Registrar Office',
     subject: 'Grade Release Notification',
@@ -83,10 +106,12 @@ const mockEmails: Email[] = [
     isRead: true,
     isStarred: false,
     hasAttachment: false,
+    priority: 'medium',
     content: 'Dear Student,\n\nYour midterm grades have been released and are now available in the student portal. You can access them by logging into your account and navigating to the "Grades" section.\n\nIf you have any questions about your grades, please contact your instructors or visit the registrar office.\n\nRegistrar Office\nCSTA'
   },
   {
     id: '3',
+    type: 'system',
     from: 'library@csta.edu',
     fromName: 'CSTA Library',
     subject: 'Overdue Book Reminder',
@@ -95,10 +120,12 @@ const mockEmails: Email[] = [
     isRead: true,
     isStarred: false,
     hasAttachment: false,
+    priority: 'medium',
     content: 'Dear Student,\n\nYou have the following books that are overdue:\n\n- "Introduction to Algorithms" by Thomas H. Cormen\n- "Database System Concepts" by Abraham Silberschatz\n\nPlease return these books to the library as soon as possible to avoid additional late fees. The current late fee is $0.50 per day per book.\n\nThank you for your cooperation.\nCSTA Library'
   },
   {
     id: '4',
+    type: 'announcement',
     from: 'events@csta.edu',
     fromName: 'Student Affairs',
     subject: 'Upcoming Campus Events',
@@ -107,10 +134,12 @@ const mockEmails: Email[] = [
     isRead: false,
     isStarred: false,
     hasAttachment: false,
+    priority: 'low',
     content: 'Dear Students,\n\nWe have exciting campus events planned for this week:\n\n- Monday: Tech Talk with Industry Professionals (6:00 PM, Auditorium)\n- Wednesday: Coding Competition (2:00 PM, Computer Lab)\n- Friday: End of Semester Party (7:00 PM, Student Center)\n\nAll events include free food and activities. We hope to see you there!\n\nStudent Affairs Team'
   },
   {
     id: '5',
+    type: 'announcement',
     from: 'careers@csta.edu',
     fromName: 'Career Services',
     subject: 'Job Fair Registration',
@@ -119,26 +148,37 @@ const mockEmails: Email[] = [
     isRead: true,
     isStarred: true,
     hasAttachment: true,
+    priority: 'high',
     content: 'Dear Students,\n\nThe annual CSTA Job Fair is scheduled for January 20, 2025. This is a great opportunity to meet with top employers in the technology industry.\n\nParticipating companies include:\n- Microsoft\n- Google\n- Amazon\n- Local tech startups\n\nRegistration is now open. Please register early as spots are limited.\n\nCareer Services Office'
   },
   {
     id: '6',
-    from: 'careers@csta.edu',
-    fromName: 'Career Services',
-    subject: 'Job Fair Registration',
-    preview: 'Annual job fair is coming up. Register to meet employers.',
-    time: '3d',
-    isRead: true,
-    isStarred: true,
-    hasAttachment: true,
-    content: 'Dear Students,\n\nThe annual CSTA Job Fair is scheduled for January 20, 2025. This is a great opportunity to meet with top employers in the technology industry.\n\nParticipating companies include:\n- Microsoft\n- Google\n- Amazon\n- Local tech startups\n\nRegistration is now open. Please register early as spots are limited.\n\nCareer Services Office'
+    type: 'email',
+    from: 'prof.martinez@csta.edu',
+    fromName: 'Prof. Martinez',
+    subject: 'Assignment Extension Request Response',
+    preview: 'Regarding your request for an extension on the final project...',
+    time: '5d',
+    isRead: false,
+    isStarred: false,
+    hasAttachment: false,
+    priority: 'medium',
+    content: 'Dear Student,\n\nI have reviewed your request for an extension on the final project. Given the circumstances you described, I am granting a 3-day extension. Your new deadline is December 18, 2024.\n\nPlease make sure to submit your work by the new deadline. If you need any additional assistance, please don\'t hesitate to reach out.\n\nBest regards,\nProf. Martinez'
   }
 ]
 
 function Inbox() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null)
-  const [emails, setEmails] = useState<Email[]>(mockEmails)
+  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications)
+  const [typeFilters, setTypeFilters] = useState<Record<NotificationType, boolean>>({
+    email: true,
+    grade: true,
+    announcement: true,
+    deadline: true,
+    system: true
+  })
+  // const [priorityFilter, setPriorityFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all') // For future priority filtering
   const [showCompose, setShowCompose] = useState(false)
   const [composeMessage, setComposeMessage] = useState<ComposeMessage>({
     to: '',
@@ -150,27 +190,58 @@ function Inbox() {
   const [forwardMode, setForwardMode] = useState(false)
   const [showMoreOptions, setShowMoreOptions] = useState(false)
 
-  const filteredEmails = emails.filter(email => {
-    return email.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           email.fromName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           email.preview.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredNotifications = notifications.filter(notification => {
+    // Type filter
+    if (!typeFilters[notification.type]) return false
+    
+    // Priority filter (disabled for now)
+    // if (priorityFilter !== 'all' && notification.priority !== priorityFilter) return false
+    
+    // Search filter
+    const searchMatch = notification.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           notification.fromName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           notification.preview.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    return searchMatch
   })
+  
+  // Legacy compatibility
+  const filteredEmails = filteredNotifications
 
   const handleStarToggle = (emailId: string, e: React.MouseEvent) => {
     e.stopPropagation()
-    setEmails(prev => prev.map(email => 
-      email.id === emailId ? { ...email, isStarred: !email.isStarred } : email
+    setNotifications(prev => prev.map(notification => 
+      notification.id === emailId ? { ...notification, isStarred: !notification.isStarred } : notification
     ))
   }
 
   const handleMarkAsRead = (emailId: string) => {
-    setEmails(prev => prev.map(email => 
-      email.id === emailId ? { ...email, isRead: true } : email
+    setNotifications(prev => prev.map(notification => 
+      notification.id === emailId ? { ...notification, isRead: true } : notification
     ))
   }
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase()
+  }
+
+  const getNotificationIcon = (type: NotificationType) => {
+    switch (type) {
+      case 'email': return <Mail className="h-4 w-4" />
+      case 'grade': return <TrendingUp className="h-4 w-4" />
+      case 'announcement': return <Award className="h-4 w-4" />
+      case 'deadline': return <Calendar className="h-4 w-4" />
+      case 'system': return <AlertCircle className="h-4 w-4" />
+    }
+  }
+
+  const getPriorityColor = (priority?: string) => {
+    switch (priority) {
+      case 'high': return 'text-red-500'
+      case 'medium': return 'text-yellow-500'
+      case 'low': return 'text-green-500'
+      default: return 'text-muted-foreground'
+    }
   }
 
   const handleCompose = () => {
@@ -257,20 +328,20 @@ function Inbox() {
 
     switch (action) {
       case 'archive':
-        setEmails(prev => prev.filter(email => email.id !== selectedEmail.id))
-        alert('Email archived successfully!')
+        setNotifications(prev => prev.filter(notification => notification.id !== selectedEmail.id))
+        alert('Notification archived successfully!')
         setSelectedEmail(null)
         break
       case 'delete':
-        setEmails(prev => prev.filter(email => email.id !== selectedEmail.id))
-        alert('Email deleted successfully!')
+        setNotifications(prev => prev.filter(notification => notification.id !== selectedEmail.id))
+        alert('Notification deleted successfully!')
         setSelectedEmail(null)
         break
       case 'flag':
-        setEmails(prev => prev.map(email => 
-          email.id === selectedEmail.id ? { ...email, isStarred: !email.isStarred } : email
+        setNotifications(prev => prev.map(notification => 
+          notification.id === selectedEmail.id ? { ...notification, isStarred: !notification.isStarred } : notification
         ))
-        alert('Email flag status updated!')
+        alert('Notification flag status updated!')
         break
       case 'copy':
         navigator.clipboard.writeText(selectedEmail.content || selectedEmail.preview)
@@ -331,10 +402,69 @@ function Inbox() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold">Inbox</h1>
-          <p className="text-sm text-muted-foreground">{filteredEmails.length} messages</p>
+          <h1 className="text-2xl font-semibold flex items-center gap-2">
+            <Bell className="h-6 w-6" />
+            Notifications Center
+          </h1>
+          <p className="text-sm text-muted-foreground">{filteredNotifications.length} notifications</p>
         </div>
         <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-2" />
+                Filters
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuLabel>Notification Types</DropdownMenuLabel>
+              <DropdownMenuCheckboxItem
+                checked={typeFilters.email}
+                onCheckedChange={(checked) => 
+                  setTypeFilters(prev => ({ ...prev, email: checked ?? false }))
+                }
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                Emails
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={typeFilters.grade}
+                onCheckedChange={(checked) => 
+                  setTypeFilters(prev => ({ ...prev, grade: checked ?? false }))
+                }
+              >
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Grades
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={typeFilters.announcement}
+                onCheckedChange={(checked) => 
+                  setTypeFilters(prev => ({ ...prev, announcement: checked ?? false }))
+                }
+              >
+                <Award className="h-4 w-4 mr-2" />
+                Announcements
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={typeFilters.deadline}
+                onCheckedChange={(checked) => 
+                  setTypeFilters(prev => ({ ...prev, deadline: checked ?? false }))
+                }
+              >
+                <Calendar className="h-4 w-4 mr-2" />
+                Deadlines
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={typeFilters.system}
+                onCheckedChange={(checked) => 
+                  setTypeFilters(prev => ({ ...prev, system: checked ?? false }))
+                }
+              >
+                <AlertCircle className="h-4 w-4 mr-2" />
+                System
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button className="cursor-pointer" onClick={handleCompose} size="sm">
             <Plus className="h-4 w-4 mr-2" />
             Compose
@@ -379,16 +509,24 @@ function Inbox() {
                   )}
                 </div>
 
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/img/csa.PNG" alt={email.fromName} />
-                  <AvatarFallback className="text-xs">{getInitials(email.fromName)}</AvatarFallback>
-                </Avatar>
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full ${getPriorityColor(email.priority)} bg-muted/20`}>
+                  {getNotificationIcon(email.type)}
+                </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className={`font-medium ${!email.isRead ? 'font-semibold' : ''}`}>
                       {email.fromName}
                     </span>
+                    {email.priority && (
+                      <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                        email.priority === 'high' ? 'bg-red-100 text-red-700' :
+                        email.priority === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>
+                        {email.priority}
+                      </span>
+                    )}
                     <span className="text-sm text-muted-foreground ml-auto">{email.time}</span>
                   </div>
                   <div className="flex items-center gap-2">

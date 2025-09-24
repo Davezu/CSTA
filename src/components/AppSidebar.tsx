@@ -1,4 +1,4 @@
-import { Award, BookA, BookAIcon, BookCheck, Calendar, Home, Inbox, Search, Settings, Trophy } from "lucide-react"
+import { Award, BookCheck, Home, Inbox, Settings, Trophy, Target, LogOut } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -14,16 +14,19 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
-import Appside from "@/components/ui/appside"
 import { ModeToggle } from './mode-toggle'
 import { Link } from 'react-router-dom'
+import { useAuth } from '@/contexts/AuthContext'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 
 
 const items = [
   { title: "Home", url: "/Home", icon: Home },
   { title: "Inbox", url: "/inbox", icon: Inbox },
-  { title: "Course/Subjects ", url: "/subject-course", icon: BookCheck },
+  { title: "Modules", url: "/modules", icon: BookCheck },
   { title: "Grades", url: "/grades", icon: Award },
+  { title: "Focus Sessions", url: "/focus", icon: Target },
   { title: "Deans Lister", url: "/table-data", icon: Trophy },
 ]
 
@@ -32,6 +35,8 @@ const dropdownItems = [
 ]
 
 function AppSidebar() {
+  const { user, logout } = useAuth()
+  
   return (
     <Sidebar className="z-50">
       <SidebarHeader>
@@ -86,7 +91,33 @@ function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Appside />
+        <div className="p-4 border-t">
+          {user && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user.avatar} alt={user.fullName} />
+                  <AvatarFallback>
+                    {user.fullName.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium truncate">{user.fullName}</div>
+                  <div className="text-xs text-muted-foreground capitalize">{user.role}</div>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={logout}
+                className="w-full"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
+          )}
+        </div>
       </SidebarFooter>
     </Sidebar>
   )
