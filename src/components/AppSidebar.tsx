@@ -1,4 +1,4 @@
-import { Award, BookCheck, Home, Inbox, Settings, Trophy, Target, LogOut } from "lucide-react"
+import { Award, BookCheck, Home, Inbox, Settings, Trophy, LogOut, List } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -26,8 +26,8 @@ const items = [
   { title: "Inbox", url: "/inbox", icon: Inbox },
   { title: "Modules", url: "/modules", icon: BookCheck },
   { title: "Grades", url: "/grades", icon: Award },
-  { title: "Focus Sessions", url: "/focus", icon: Target },
   { title: "Deans Lister", url: "/table-data", icon: Trophy },
+  { title: "Add Subject", url: "/list", icon: List },
 ]
 
 const dropdownItems = [

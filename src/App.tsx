@@ -8,7 +8,6 @@ import Settings from './pages/settings';
 import List from './pages/list';
 import Inbox from './pages/inbox'
 import Grades from './pages/grades';
-import Focus from './pages/focus';
 import Modules from './pages/modules';
 import Login from './pages/login';
 
@@ -34,7 +33,6 @@ function ProtectedRoutes() {
         <Route path="/inbox" element={<Inbox/>}/>
         <Route path="/grades" element={<Grades/>}/>
         <Route path="/modules" element={<Modules/>}/>
-        <Route path="/focus" element={<Focus/>}/>
         <Route path="/table-data" element={<TableData/>}/>
         <Route path="/subject-course" element={<Subject/>}/>
         <Route path="/settings" element={<Settings/>}/>

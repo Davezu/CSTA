@@ -460,7 +460,7 @@ interface ColumnVisibility {
 function Grades() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedGrade, setSelectedGrade] = useState<Grade | null>(null)
-  const [grades] = useState<Grade[]>(mockGrades)
+  const [grades, setGrades] = useState<Grade[]>(mockGrades)
   const [filterStatus, setFilterStatus] = usePersistentState<'all' | 'completed' | 'in-progress' | 'pending'>('grades-filter-status', 'all')
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
@@ -482,6 +482,23 @@ function Grades() {
   const [whatIfGrades, setWhatIfGrades] = useState<Record<string, number>>({})
   const listRef = React.useRef<HTMLDivElement | null>(null)
   const [sixRowHeight, setSixRowHeight] = useState<number | undefined>(undefined)
+
+  // Load user-added grades from localStorage and merge with mock data
+  React.useEffect(() => {
+    try {
+      const stored = localStorage.getItem('user_grades')
+      if (stored) {
+        const userGrades = JSON.parse(stored) as Grade[]
+        setGrades([...mockGrades, ...userGrades])
+      } else {
+        setGrades([...mockGrades])
+      }
+    } catch (e) {
+      console.error('Failed to load user grades:', e)
+      setGrades([...mockGrades])
+    }
+  }, [])
+  const showSelection = false
 
   const recalcPageSize = React.useCallback(() => {
     const firstRow = listRef.current?.querySelector('[data-row="grade-item"]') as HTMLElement | null
@@ -746,89 +763,7 @@ function Grades() {
             <h1 className="text-base sm:text-lg lg:text-xl font-semibold">Grades</h1>
             <p className="text-xs sm:text-sm text-muted-foreground">Track your academic progress</p>
         </div>
-        <div className="flex items-center gap-2">
-            <Button onClick={() => handleExportGrades()} size="sm" variant="outline" className="flex-shrink-0">
-              <Download className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="ml-1 text-xs sm:text-sm">Export</span>
-            </Button>
-            <Button 
-              onClick={() => setShowWhatIfSimulator(!showWhatIfSimulator)} 
-              size="sm" 
-              variant={showWhatIfSimulator ? "default" : "outline"} 
-              className="flex-shrink-0"
-            >
-              <Calculator className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="ml-1 text-xs sm:text-sm">What-If</span>
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => window.location.reload()} className="flex-shrink-0">
-              <RefreshCw className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="ml-1 text-xs sm:text-sm">Refresh</span>
-            </Button>
-            {/* Demo buttons for testing states */}
-            <Button variant="outline" size="sm" onClick={() => setIsLoading(!isLoading)} className="flex-shrink-0">
-              <span className="text-xs sm:text-sm">{isLoading ? 'Stop Loading' : 'Demo Loading'}</span>
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => setError(error ? null : 'Failed to load grades from server')} className="flex-shrink-0">
-              <span className="text-xs sm:text-sm">{error ? 'Clear Error' : 'Demo Error'}</span>
-          </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="flex-shrink-0">
-                  <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="ml-1 text-xs sm:text-sm">View</span>
-          </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuLabel>Density</DropdownMenuLabel>
-                <DropdownMenuRadioGroup value={density} onValueChange={(value) => setDensity(value as DensityMode)}>
-                  <DropdownMenuRadioItem value="comfortable">Comfortable</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="compact">Compact</DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel>Columns</DropdownMenuLabel>
-                <DropdownMenuCheckboxItem
-                  checked={columnVisibility.instructor}
-                  onCheckedChange={(checked) => 
-                    setColumnVisibility(prev => ({ ...prev, instructor: checked ?? false }))
-                  }
-                >
-                  Instructor
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={columnVisibility.units}
-                  onCheckedChange={(checked) => 
-                    setColumnVisibility(prev => ({ ...prev, units: checked ?? false }))
-                  }
-                >
-                  Units
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={columnVisibility.semester}
-                  onCheckedChange={(checked) => 
-                    setColumnVisibility(prev => ({ ...prev, semester: checked ?? false }))
-                  }
-                >
-                  Semester
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={columnVisibility.status}
-                  onCheckedChange={(checked) => 
-                    setColumnVisibility(prev => ({ ...prev, status: checked ?? false }))
-                  }
-                >
-                  Status
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem
-                  checked={columnVisibility.grade}
-                  onCheckedChange={(checked) => 
-                    setColumnVisibility(prev => ({ ...prev, grade: checked ?? false }))
-                  }
-                >
-                  Grade
-                </DropdownMenuCheckboxItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+          <div className="flex items-center gap-2"></div>
       </div>
 
       {/* Stats Cards */}
@@ -995,7 +930,7 @@ function Grades() {
                 onChange={(e) => setPageSize(Number(e.target.value))}
                 className="h-7 text-xs bg-background border rounded px-2"
               >
-                {[6, 10, 15, 20, 50].map(n => (
+                {[7, 14, 18, 24].map(n => (
                   <option key={n} value={n}>{n}</option>
                 ))}
               </select>
@@ -1005,7 +940,7 @@ function Grades() {
       </div>
 
         {/* Bulk Action Bar */}
-        {selectedRows.size > 0 && (
+        {showSelection && selectedRows.size > 0 && (
           <div className="bg-primary/10 border border-primary/20 rounded-lg p-2 flex items-center justify-between">
             <span className="text-sm font-medium">
               {selectedRows.size} item{selectedRows.size > 1 ? 's' : ''} selected
@@ -1028,11 +963,13 @@ function Grades() {
           <div className="bg-card rounded-lg border">
             {/* Sort Header - Sticky */}
             <div className="sticky top-[120px] z-10 flex items-center gap-2 p-2 border-b bg-muted/95 backdrop-blur supports-[backdrop-filter]:bg-muted/80 text-xs font-medium text-muted-foreground">
-              <Checkbox
-                checked={selectedRows.size === paginatedGrades.length && paginatedGrades.length > 0}
-                onCheckedChange={handleSelectAll}
-                className="h-3 w-3"
-              />
+              {showSelection && (
+                <Checkbox
+                  checked={selectedRows.size === paginatedGrades.length && paginatedGrades.length > 0}
+                  onCheckedChange={handleSelectAll}
+                  className="h-3 w-3"
+                />
+              )}
                 <div className="flex-1 min-w-0">
                 <button
                   onClick={() => handleSort('subject')}
@@ -1073,8 +1010,8 @@ function Grades() {
                   </div>
             <div
               ref={listRef}
-              className={`divide-y ${pageSize > 6 ? 'overflow-y-auto' : ''} ${needsPagination ? 'pb-16' : ''}`}
-              style={pageSize > 6 && sixRowHeight ? { maxHeight: `${sixRowHeight}px` } : undefined}
+              className={`divide-y ${(((pageSize > 6) && (filteredAndSortedGrades.length > 6)) || needsPagination) ? 'overflow-y-auto' : ''}`}
+              style={(paginatedGrades.length > 6 && sixRowHeight) ? { maxHeight: `${sixRowHeight}px` } : undefined}
             >
               {isLoading ? (
                 Array.from({ length: pageSize }).map((_, i) => (
@@ -1089,12 +1026,14 @@ function Grades() {
                   data-row="grade-item"
                   className={`flex items-start gap-2 sm:gap-2 ${density === 'compact' ? 'p-1' : 'p-1.5 sm:p-2'} hover:bg-muted/50 transition-colors ${
                     selectedGrade?.id === grade.id ? 'bg-muted/50' : ''}`}>
-                  <Checkbox
-                    checked={selectedRows.has(grade.id)}
-                    onCheckedChange={() => handleSelectRow(grade.id)}
-                    className="h-3 w-3 mt-0.5 flex-shrink-0"
-                    onClick={(e) => e.stopPropagation()}
-                  />
+                  {showSelection && (
+                    <Checkbox
+                      checked={selectedRows.has(grade.id)}
+                      onCheckedChange={() => handleSelectRow(grade.id)}
+                      className="h-3 w-3 mt-0.5 flex-shrink-0"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  )}
                   <div 
                     className="flex items-start gap-2 flex-1 cursor-pointer"
                     onClick={() => {

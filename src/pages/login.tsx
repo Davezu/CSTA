@@ -65,24 +65,21 @@ function Login() {
               variant={selectedRole === 'student' ? 'default' : 'outline'}
               size="sm"
               onClick={() => fillDemoCredentials('student')}
-              className="text-xs"
-            >
+              className="text-xs">
               Student
             </Button>
             <Button
               variant={selectedRole === 'instructor' ? 'default' : 'outline'}
               size="sm"
               onClick={() => fillDemoCredentials('instructor')}
-              className="text-xs"
-            >
+              className="text-xs">
               Instructor
             </Button>
             <Button
               variant={selectedRole === 'admin' ? 'default' : 'outline'}
               size="sm"
               onClick={() => fillDemoCredentials('admin')}
-              className="text-xs"
-            >
+              className="text-xs">
               Admin
             </Button>
           </div>
@@ -114,8 +111,7 @@ function Login() {
                   onChange={(e) => setUsername(e.target.value)}
                   className="pl-10"
                   placeholder="Enter your username"
-                  disabled={isLoading}
-                />
+                  disabled={isLoading}/>
               </div>
             </div>
 
@@ -132,14 +128,12 @@ function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10"
                   placeholder="Enter your password"
-                  disabled={isLoading}
-                />
+                  disabled={isLoading}/>
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  disabled={isLoading}
-                >
+                  disabled={isLoading}>
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
@@ -148,8 +142,7 @@ function Login() {
             <Button
               type="submit"
               className="w-full"
-              disabled={isLoading}
-            >
+              disabled={isLoading}>
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>

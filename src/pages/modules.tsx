@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { 
   BookOpen, 
   Calendar,
@@ -21,7 +21,7 @@ const mockModules: Module[] = [
     title: 'Introduction to Data Structures',
     description: 'Learn fundamental data structures including arrays, linked lists, stacks, and queues.',
     subject: 'Data Structures',
-    instructor: 'Prof. Johnson',
+    instructor: 'Prof. Doc',
     content: `# Introduction to Data Structures
 
 ## Overview
@@ -67,7 +67,7 @@ Create implementations of the basic data structures discussed in class.`,
     title: 'Algorithm Analysis and Big O Notation',
     description: 'Understanding time and space complexity analysis for algorithms.',
     subject: 'Algorithms',
-    instructor: 'Prof. Martinez',
+    instructor: 'Prof. Mark',
     content: `# Algorithm Analysis and Big O Notation
 
 ## Introduction
@@ -108,7 +108,7 @@ Analyze the complexity of various sorting algorithms.`,
     title: 'Database Design Principles',
     description: 'Learn the fundamentals of relational database design and normalization.',
     subject: 'Database Systems',
-    instructor: 'Prof. Chen',
+    instructor: 'Prof. Nice',
     content: `# Database Design Principles
 
 ## Database Design Process
@@ -143,6 +143,8 @@ function Modules() {
   const [selectedModule, setSelectedModule] = useState<Module | null>(null)
   const [filterSubject, setFilterSubject] = useState<string>('all')
   const [modules] = useState<Module[]>(mockModules)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const subjects = Array.from(new Set(modules.map(m => m.subject)))
   
@@ -164,6 +166,43 @@ function Modules() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
   }
 
+  const handleDownload = (url: string, name: string) => {
+    try {
+      const link = document.createElement('a')
+      link.href = url
+      link.download = name
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (e) {
+      console.error(e)
+      alert('Failed to download file')
+    }
+  }
+
+  const handleSubmitClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+      fileInputRef.current.click()
+    }
+  }
+
+  const handleFileSelected: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    try {
+      setIsSubmitting(true)
+      // Simulate upload delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      alert(`Submitted: ${file.name}`)
+    } catch (err) {
+      console.error(err)
+      alert('Failed to submit file')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -180,7 +219,7 @@ function Modules() {
   }
 
   return (
-    <div className="w-full px-6 md:px-10 max-w-7xl mx-auto space-y-6 pb-6">
+    <div className="container-responsive max-w-7xl space-y-6 pb-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -193,21 +232,19 @@ function Modules() {
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search modules, instructors, or content..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+            className="pl-10"/>
         </div>
         <select
           value={filterSubject}
           onChange={(e) => setFilterSubject(e.target.value)}
-          className="h-10 px-3 border rounded-md bg-background min-w-[150px]"
-        >
+          className="h-10 px-3 border rounded-md bg-background min-w-[150px]">
           <option value="all">All Subjects</option>
           {subjects.map(subject => (
             <option key={subject} value={subject}>{subject}</option>
@@ -215,14 +252,14 @@ function Modules() {
         </select>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Modules List */}
-        <div className="lg:col-span-1 space-y-4">
+        <div className="lg:col-span-1 space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold">Modules ({filteredModules.length})</h2>
           </div>
           
-          <div className="space-y-3 max-h-[600px] overflow-y-auto">
+          <div className="space-y-3 max-h-[60vh] sm:max-h-[600px] overflow-y-auto">
             {filteredModules.map(module => (
               <div
                 key={module.id}
@@ -231,8 +268,7 @@ function Modules() {
                     ? 'bg-primary/10 border-primary/30' 
                     : 'hover:bg-muted/50'
                 }`}
-                onClick={() => setSelectedModule(module)}
-              >
+                onClick={() => setSelectedModule(module)}>
                 <div className="flex items-start gap-3">
                   <div className="p-2 bg-primary/20 rounded-lg">
                     <BookOpen className="h-4 w-4 text-primary" />
@@ -285,10 +321,11 @@ function Modules() {
 
         {/* Module Content */}
         <div className="lg:col-span-2">
+          {/* Desktop (lg+) inline detail */}
           {selectedModule ? (
-            <div className="bg-card rounded-lg border">
+            <div className="hidden lg:block bg-card rounded-lg border max-h-[70vh] overflow-y-auto">
               {/* Module Header */}
-              <div className="p-6 border-b">
+              <div className="p-6 border-b sticky top-0 bg-card z-10">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <h1 className="text-xl font-semibold mb-2">{selectedModule.title}</h1>
@@ -316,9 +353,14 @@ function Modules() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      onChange={handleFileSelected}
+                      className="hidden"/>
+                    <Button size="sm" variant="outline" onClick={handleSubmitClick} disabled={isSubmitting}>
                       <Upload className="h-4 w-4 mr-2" />
-                      Submit
+                      {isSubmitting ? 'Submitting…' : 'Submit'}
                     </Button>
                   </div>
                 </div>
@@ -337,7 +379,7 @@ function Modules() {
                               {formatFileSize(attachment.size)}
                             </div>
                           </div>
-                          <Button size="sm" variant="ghost">
+                          <Button size="sm" variant="ghost" onClick={() => handleDownload(attachment.url, attachment.name)}>
                             <Download className="h-3 w-3" />
                           </Button>
                         </div>
@@ -350,7 +392,29 @@ function Modules() {
               {/* Module Content */}
               <div className="p-6">
                 <div className="prose prose-sm max-w-none">
-                  <div className="whitespace-pre-wrap">{selectedModule.content}</div>
+                  {/* Render markdown-like content: treat lines starting with # as headings */}
+                  {selectedModule.content.split('\n').map((line, idx) => {
+                    const trimmed = line.trim()
+                    if (trimmed.startsWith('### ')) {
+                      return <h3 key={idx} className="text-base font-semibold mb-2">{trimmed.replace(/^###\s+/, '')}</h3>
+                    }
+                    if (trimmed.startsWith('## ')) {
+                      return <h2 key={idx} className="text-lg font-semibold mb-2">{trimmed.replace(/^##\s+/, '')}</h2>
+                    }
+                    if (trimmed.startsWith('# ')) {
+                      return <h1 key={idx} className="text-xl font-bold mb-3">{trimmed.replace(/^#\s+/, '')}</h1>
+                    }
+                    if (trimmed.startsWith('- ')) {
+                      return <li key={idx} className="ml-5 list-disc">{trimmed.replace(/^-\s+/, '')}</li>
+                    }
+                    if (/^\d+\.\s+/.test(trimmed)) {
+                      return <li key={idx} className="ml-5 list-decimal">{trimmed.replace(/^\d+\.\s+/, '')}</li>
+                    }
+                    if (trimmed === '') {
+                      return <br key={idx} />
+                    }
+                    return <p key={idx} className="mb-2">{line}</p>
+                  })}
                 </div>
               </div>
             </div>
@@ -365,6 +429,68 @@ function Modules() {
           )}
         </div>
       </div>
+
+      {/* Mobile modal detail */}
+      {selectedModule && (
+        <div className="fixed inset-0 bg-black/50 z-50 p-4 lg:hidden">
+          <div className="bg-card rounded-lg border w-full max-w-2xl mx-auto max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-base font-semibold truncate mr-2">{selectedModule.title}</h2>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedModule(null)} className="cursor-pointer">
+                Close
+              </Button>
+            </div>
+            <div className="p-4 space-y-4 flex-1 overflow-y-auto">
+              <p className="text-sm text-muted-foreground">{selectedModule.description}</p>
+              {/* Attachments */}
+              {selectedModule.attachments.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="font-medium text-sm">Attachments</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {selectedModule.attachments.map(attachment => (
+                      <div key={attachment.id} className="flex items-center gap-2 p-2 bg-muted/20 rounded">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium truncate">{attachment.name}</div>
+                          <div className="text-xs text-muted-foreground">{formatFileSize(attachment.size)}</div>
+                        </div>
+                        <Button size="sm" variant="ghost" onClick={() => handleDownload(attachment.url, attachment.name)}>
+                          <Download className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="prose prose-sm max-w-none">
+                {selectedModule.content.split('\n').map((line, idx) => {
+                  const trimmed = line.trim()
+                  if (trimmed.startsWith('### ')) {
+                    return <h3 key={idx} className="text-base font-semibold mb-2">{trimmed.replace(/^###\s+/, '')}</h3>
+                  }
+                  if (trimmed.startsWith('## ')) {
+                    return <h2 key={idx} className="text-lg font-semibold mb-2">{trimmed.replace(/^##\s+/, '')}</h2>
+                  }
+                  if (trimmed.startsWith('# ')) {
+                    return <h1 key={idx} className="text-xl font-bold mb-3">{trimmed.replace(/^#\s+/, '')}</h1>
+                  }
+                  if (trimmed.startsWith('- ')) {
+                    return <li key={idx} className="ml-5 list-disc">{trimmed.replace(/^-\s+/, '')}</li>
+                  }
+                  if (/^\d+\.\s+/.test(trimmed)) {
+                    return <li key={idx} className="ml-5 list-decimal">{trimmed.replace(/^\d+\.\s+/, '')}</li>
+                  }
+                  if (trimmed === '') {
+                    return <br key={idx} />
+                  }
+                  return <p key={idx} className="mb-2">{line}</p>
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

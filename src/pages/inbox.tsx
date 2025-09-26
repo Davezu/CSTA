@@ -398,9 +398,9 @@ function Inbox() {
   }, [showMoreOptions])
 
   return (
-    <div className="w-full px-6 md:px-10 max-w-5xl mx-auto space-y-4 pb-6">
+    <div className="container-responsive max-w-5xl space-y-4 pb-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
             <Bell className="h-6 w-6" />
@@ -408,7 +408,7 @@ function Inbox() {
           </h1>
           <p className="text-sm text-muted-foreground">{filteredNotifications.length} notifications</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm">
@@ -487,7 +487,7 @@ function Inbox() {
       </div>
 
       {/* Main Content */}
-      <div className="flex gap-4 h-[calc(100vh-200px)]">
+      <div className="flex flex-col lg:flex-row gap-4 h-auto lg:h-[calc(100vh-200px)]">
         {/* Email List */}
         <div className="flex-1 bg-card rounded-lg border flex flex-col">
           <div className="divide-y flex-1 overflow-y-auto">
@@ -555,8 +555,9 @@ function Inbox() {
         </div>
 
         {/* Email Detail */}
+        {/* Desktop (lg+) side detail */}
         {selectedEmail && (
-          <div className="w-80 bg-card rounded-lg border p-4 flex flex-col">
+          <div className="hidden lg:flex w-80 bg-card rounded-lg border p-4 flex-col">
             <div className="flex items-center justify-between mb-4 flex-shrink-0">
               <Button variant="ghost" size="sm" onClick={() => setSelectedEmail(null)} className="cursor-pointer">
                 ← Back
@@ -670,6 +671,64 @@ function Inbox() {
         )}
       </div>
 
+      {/* Mobile modal detail */}
+      {selectedEmail && (
+        <div className="fixed inset-0 bg-black/50 z-50 p-4 lg:hidden">
+          <div className="bg-card rounded-lg border w-full max-w-2xl mx-auto max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-base font-semibold truncate mr-2">{selectedEmail.subject}</h2>
+              <Button variant="ghost" size="sm" onClick={() => setSelectedEmail(null)} className="cursor-pointer">
+                Close
+              </Button>
+            </div>
+            <div className="p-4 space-y-4 flex-1 overflow-y-auto">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src="/img/csa.PNG" alt={selectedEmail.fromName} />
+                  <AvatarFallback>{getInitials(selectedEmail.fromName)}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold">{selectedEmail.fromName}</span>
+                    {selectedEmail.isStarred && <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />}
+                  </div>
+                  <div className="text-sm text-muted-foreground">{selectedEmail.time}</div>
+                </div>
+              </div>
+              <div className="prose prose-sm max-w-none">
+                <div className="text-muted-foreground whitespace-pre-line">
+                  {selectedEmail.content || selectedEmail.preview}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-1 p-2 border-t">
+              <Button variant="ghost" size="sm" onClick={handleReply} className="cursor-pointer" title="Reply">
+                <Reply className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleForward} className="cursor-pointer" title="Forward">
+                <Forward className="h-4 w-4" />
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="cursor-pointer" title="More">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-44">
+                  <button onClick={() => handleMoreOptions('archive')} className="w-full text-left px-3 py-2 text-sm">Archive</button>
+                  <button onClick={() => handleMoreOptions('delete')} className="w-full text-left px-3 py-2 text-sm text-red-600">Delete</button>
+                  <button onClick={() => handleMoreOptions('flag')} className="w-full text-left px-3 py-2 text-sm">{selectedEmail?.isStarred ? 'Unflag' : 'Flag'}</button>
+                  <div className="border-t my-1" />
+                  <button onClick={() => handleMoreOptions('copy')} className="w-full text-left px-3 py-2 text-sm">Copy Content</button>
+                  <button onClick={() => handleMoreOptions('download')} className="w-full text-left px-3 py-2 text-sm">Download</button>
+                  <button onClick={() => handleMoreOptions('print')} className="w-full text-left px-3 py-2 text-sm">Print</button>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Compose Email Modal */}
       {showCompose && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -722,8 +781,7 @@ function Inbox() {
                   value={composeMessage.subject}
                   onChange={(e) => setComposeMessage(prev => ({ ...prev, subject: e.target.value }))}
                   placeholder="Message subject"
-                  className="w-full"
-                />
+                  className="w-full"/>
               </div>
               
               <div>
@@ -732,8 +790,7 @@ function Inbox() {
                   value={composeMessage.content}
                   onChange={(e) => setComposeMessage(prev => ({ ...prev, content: e.target.value }))}
                   placeholder="Type your message here..."
-                  className="w-full h-40 p-3 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
+                  className="w-full h-40 p-3 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-primary/20"/>
               </div>
             </div>
             

@@ -25,7 +25,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-// Mock users for demo
 const mockUsers: (User & { password: string })[] = [
   {
     id: '1',
@@ -94,7 +93,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Check for existing session
     const savedUser = localStorage.getItem('csta_user')
     if (savedUser) {
       try {
@@ -112,7 +110,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true)
     
     try {
-      // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 1000))
       
       const foundUser = mockUsers.find(
@@ -175,8 +172,6 @@ export function useAuth() {
   }
   return context
 }
-
-// Permission wrapper component
 interface PermissionGuardProps {
   permission: string
   fallback?: ReactNode
