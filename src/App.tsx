@@ -1,11 +1,11 @@
 import AppLayout from './shared/Components/Layouts/AppLayout';
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Home from './pages/home';
+import Home from './pages/Home';
 import TableData from "./pages/table-data";
 import Subject from './pages/subject-course';
 import Settings from './pages/settings';
-import List from './pages/list';
+import List from './pages/List';
 import Inbox from './pages/inbox'
 import Grades from './pages/grades';
 import Modules from './pages/modules';
