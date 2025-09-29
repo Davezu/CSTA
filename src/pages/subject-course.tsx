@@ -171,7 +171,7 @@ function SubjectCourse() {
               variant="outline"
               role="combobox"
               aria-expanded={courseOpen}
-              className="w-full justify-between h-12 bg-white/5 border-white/20 hover:bg-white/10 hover:border-white/30 transition-all duration-200">
+              className="w-full justify-between h-12 bg-white/5 border-white/20 hover:bg-white/10 hover:border-white/30 transition-all duration-200 ">
               {courseValue
                 ? course.find((c) => c.value === courseValue)?.label
                 : "Select Course..."}

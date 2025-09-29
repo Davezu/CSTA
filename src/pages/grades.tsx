@@ -14,23 +14,12 @@ import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
-  Settings
+
 } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
 interface Grade {
   id: string
   subject: string
@@ -467,8 +456,8 @@ function Grades() {
   const [pageSize, setPageSize] = usePersistentState<number>('grades-page-size', 6)
   const [sortField, setSortField] = usePersistentState<SortField | null>('grades-sort-field', null)
   const [sortOrder, setSortOrder] = usePersistentState<SortOrder>('grades-sort-order', 'asc')
-  const [density, setDensity] = usePersistentState<DensityMode>('grades-density', 'comfortable')
-  const [columnVisibility, setColumnVisibility] = usePersistentState<ColumnVisibility>('grades-columns', {
+  const [density] = usePersistentState<DensityMode>('grades-density', 'comfortable')
+  const [columnVisibility] = usePersistentState<ColumnVisibility>('grades-columns', {
     instructor: true,
     units: true,
     semester: true,
@@ -476,9 +465,9 @@ function Grades() {
     grade: true
   })
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [showWhatIfSimulator, setShowWhatIfSimulator] = useState(false)
+  const [showWhatIfSimulator] = useState(false)
   const [whatIfGrades, setWhatIfGrades] = useState<Record<string, number>>({})
   const listRef = React.useRef<HTMLDivElement | null>(null)
   const [sixRowHeight, setSixRowHeight] = useState<number | undefined>(undefined)
@@ -918,7 +907,7 @@ function Grades() {
               variant={filterStatus === status ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilterStatus(status)}
-                  className="capitalize text-xs flex-shrink-0">
+                  className=" cursor-pointer capitalize text-xs flex-shrink-0">
               {status === 'all' ? 'All' : status === 'in-progress' ? 'In Progress' : status}
             </Button>
           ))}

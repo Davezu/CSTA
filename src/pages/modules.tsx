@@ -244,8 +244,8 @@ function Modules() {
         <select
           value={filterSubject}
           onChange={(e) => setFilterSubject(e.target.value)}
-          className="h-10 px-3 border rounded-md bg-background min-w-[150px]">
-          <option value="all">All Subjects</option>
+          className="h-10 px-3 border rounded-md bg-background min-w-[150px] cursor-pointer">
+          <option value="all" className='cursor-pointer'>All Subjects</option>
           {subjects.map(subject => (
             <option key={subject} value={subject}>{subject}</option>
           ))}
@@ -358,7 +358,7 @@ function Modules() {
                       ref={fileInputRef}
                       onChange={handleFileSelected}
                       className="hidden"/>
-                    <Button size="sm" variant="outline" onClick={handleSubmitClick} disabled={isSubmitting}>
+                    <Button size="sm" className='cursor-pointer' variant="outline" onClick={handleSubmitClick} disabled={isSubmitting}>
                       <Upload className="h-4 w-4 mr-2" />
                       {isSubmitting ? 'Submitting…' : 'Submit'}
                     </Button>
@@ -371,15 +371,15 @@ function Modules() {
                     <h3 className="font-medium text-sm">Attachments</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {selectedModule.attachments.map(attachment => (
-                        <div key={attachment.id} className="flex items-center gap-2 p-2 bg-muted/20 rounded">
+                        <div key={attachment.id} className=" cursor-pointer flex items-center gap-2 p-2 bg-muted/20 rounded">
                           <FileText className="h-4 w-4 text-muted-foreground" />
                           <div className="flex-1 min-w-0">
                             <div className="text-sm font-medium truncate">{attachment.name}</div>
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-xs text-muted-foreground ">
                               {formatFileSize(attachment.size)}
                             </div>
                           </div>
-                          <Button size="sm" variant="ghost" onClick={() => handleDownload(attachment.url, attachment.name)}>
+                          <Button size="sm" className=' cursor-pointer' variant="ghost" onClick={() => handleDownload(attachment.url, attachment.name)}>
                             <Download className="h-3 w-3" />
                           </Button>
                         </div>

@@ -120,7 +120,7 @@ function List() {
           <select
             value={course}
             onChange={(e) => { setCourse(e.target.value as Course | ''); setYearLevel(''); setSection(''); setSubject(null); setMessage(''); setMissingField('') }}
-            className="h-9 px-3 border rounded w-full"
+            className="h-9 px-3 border rounded w-full cursor-pointer"
             aria-invalid={missingField==='course'}
             required>
             <option value="">Select Course</option>
@@ -140,7 +140,7 @@ function List() {
           <select
             value={yearLevel}
             onChange={(e) => { setYearLevel(e.target.value as YearLevel | ''); setSection(''); setSubject(null); setMessage(''); setMissingField('') }}
-            className={`h-9 px-3 border rounded w-full ${!course ? 'opacity-50' : ''}`}
+            className={`cursor-pointer h-9 px-3 border rounded w-full ${!course ? 'opacity-50' : ''}`}
             disabled={!course}
             aria-invalid={missingField==='year'}
             required>
@@ -166,7 +166,7 @@ function List() {
           <select
             value={section}
             onChange={(e) => { setSection(e.target.value); setMessage(''); setMissingField('') }}
-            className={`h-9 px-3 border rounded w-full ${(!course || !yearLevel) ? 'opacity-50' : ''}`}
+            className={`cursor-pointer h-9 px-3 border rounded w-full ${(!course || !yearLevel) ? 'opacity-50' : ''}`}
             disabled={!course || !yearLevel}
             aria-invalid={missingField==='section'}
             required>
@@ -182,7 +182,7 @@ function List() {
         <div className={`relative ${missingField==='subject' ? 'ring-2 ring-red-500 rounded' : ''}`}>
           {(!course || !yearLevel || !section) && (
             <div
-              className="absolute inset-0 z-10 cursor-not-allowed"
+              className="bsolute inset-0 z-10 cursor-not-allowed"
               onClick={() => {
                 if (!course) { setMissingField('course'); setMessage('Please choose Course first.'); return }
                 if (!yearLevel) { setMissingField('year'); setMessage('Please choose Year Level first.'); return }
@@ -193,7 +193,7 @@ function List() {
           <select
             value={subject?.name || ''}
             onChange={(e) => { onSelectSubject(e.target.value); setMessage(''); setMissingField('') }}
-            className={`h-9 px-3 border rounded w-full ${(!course || !yearLevel || !section) ? 'opacity-50' : ''}`}
+            className={`cursor-pointer h-9 px-3 border rounded w-full ${(!course || !yearLevel || !section) ? 'opacity-50' : ''}`}
             disabled={!course || !yearLevel || !section}
             aria-invalid={missingField==='subject'}
             required>
@@ -213,7 +213,7 @@ function List() {
           className="h-9 px-3 border rounded"
           required />
 
-        <button type="submit" className="h-9 px-4 rounded bg-primary text-primary-foreground">Add Subject</button>
+        <button type="submit" className="cursor-pointer h-9 px-4 rounded bg-primary text-primary-foreground">Add Subject</button>
       </form>
       <p className="text-sm text-muted-foreground">Flow: Choose Course → Year → Section → Subject → enter Code. Units are taken from curriculum; you can adjust the curriculum list in `list.tsx`.</p>
     </div>
