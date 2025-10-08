@@ -2,14 +2,15 @@ import AppLayout from './shared/Components/Layouts/AppLayout';
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Home from './pages/home';
-import TableData from "./pages/table-data";
-import Subject from './pages/subject-course';
+import TableData from "./pages/tableData";
+import Subject from './pages/subjectCourse';
 import Settings from './pages/settings';
-import List from './pages/list';
 import Inbox from './pages/inbox'
 import Grades from './pages/grades';
 import Modules from './pages/modules';
 import Login from './pages/login';
+import AddSubjects from './pages/addSubject';
+import Calendar from './pages/calendar';
 
 function ProtectedRoutes() {
   const { isAuthenticated, isLoading } = useAuth()
@@ -33,10 +34,11 @@ function ProtectedRoutes() {
         <Route path="/inbox" element={<Inbox/>}/>
         <Route path="/grades" element={<Grades/>}/>
         <Route path="/modules" element={<Modules/>}/>
-        <Route path="/table-data" element={<TableData/>}/>
-        <Route path="/subject-course" element={<Subject/>}/>
+        <Route path="/tableData" element={<TableData/>}/>
+        <Route path="/subjectCourse" element={<Subject/>}/>
         <Route path="/settings" element={<Settings/>}/>
-        <Route path="/list" element={<List/>}/>
+        <Route path="/subjects" element={<AddSubjects/>}/>
+        <Route path="/calendar" element={<Calendar/>}/>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

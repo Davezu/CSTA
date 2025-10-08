@@ -1,4 +1,4 @@
-import { Award, BookCheck, Home, Inbox, Settings, Trophy, LogOut, List } from "lucide-react"
+import { Award, BookCheck, Home, Inbox, Settings, Trophy, LogOut, List, Calendar, BookAIcon } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -22,12 +22,13 @@ import { Button } from '@/components/ui/button'
 
 
 const items = [
-  { title: "Home", url: "/Home", icon: Home },
+  { title: "Home", url: "/home", icon: Home },
   { title: "Inbox", url: "/inbox", icon: Inbox },
   { title: "Modules", url: "/modules", icon: BookCheck },
+  { title: "Calendar", url: "/calendar", icon: Calendar },
   { title: "Grades", url: "/grades", icon: Award },
-  { title: "Deans Lister", url: "/table-data", icon: Trophy },
-  { title: "Add Subject", url: "/list", icon: List },
+  { title: "Deans Lister", url: "/tableData", icon: Trophy },
+  { title: "Add Subject", url: "/subjects", icon: BookAIcon },
 ]
 
 const dropdownItems = [

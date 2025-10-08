@@ -48,7 +48,7 @@ const curriculum: Record<Course, Record<YearLevel, { sections: string[]; subject
   }
 }
 
-function List() {
+function addSubject() {
   const [course, setCourse] = useState<Course | ''>('')
   const [yearLevel, setYearLevel] = useState<YearLevel | ''>('')
   const [section, setSection] = useState<string>('')
@@ -220,4 +220,4 @@ function List() {
   )
 }
 
-export default List
+export default addSubject

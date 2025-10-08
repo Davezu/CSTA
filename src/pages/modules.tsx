@@ -57,7 +57,7 @@ Create implementations of the basic data structures discussed in class.`,
         type: 'application/zip'
       }
     ],
-    dueDate: '2024-12-20T23:59:00Z',
+    dueDate: '2025-10-20T23:59:00Z',
     createdAt: '2024-12-01T10:00:00Z',
     updatedAt: '2024-12-05T14:30:00Z',
     status: 'published'
@@ -98,9 +98,9 @@ Analyze the complexity of various sorting algorithms.`,
         type: 'application/pdf'
       }
     ],
-    dueDate: '2024-12-25T23:59:00Z',
-    createdAt: '2024-12-02T09:00:00Z',
-    updatedAt: '2024-12-02T09:00:00Z',
+    dueDate: '2025-10-25T23:59:00Z',
+    createdAt: '2025-10-02T09:00:00Z',
+    updatedAt: '2025-10-02T09:00:00Z',
     status: 'published'
   },
   {
@@ -131,7 +131,7 @@ Analyze the complexity of various sorting algorithms.`,
 ## Assignment
 Design a database schema for a library management system.`,
     attachments: [],
-    dueDate: '2024-12-30T23:59:00Z',
+    dueDate: '2025-10-30T23:59:00Z',
     createdAt: '2024-12-03T11:00:00Z',
     updatedAt: '2024-12-03T11:00:00Z',
     status: 'published'

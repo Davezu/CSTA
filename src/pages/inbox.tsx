@@ -337,12 +337,6 @@ function Inbox() {
         alert('Notification deleted successfully!')
         setSelectedEmail(null)
         break
-      case 'flag':
-        setNotifications(prev => prev.map(notification => 
-          notification.id === selectedEmail.id ? { ...notification, isStarred: !notification.isStarred } : notification
-        ))
-        alert('Notification flag status updated!')
-        break
       case 'copy':
         navigator.clipboard.writeText(selectedEmail.content || selectedEmail.preview)
         alert('Email content copied to clipboard!')
@@ -599,15 +593,6 @@ function Inbox() {
                            <Trash2 className="h-4 w-4" />
                            Delete
                          </button>
-                         <button
-                           onClick={(e) => {
-                             e.stopPropagation()
-                             handleMoreOptions('flag')
-                           }}
-                           className="flex items-center gap-3 w-full px-3 py-2 text-sm hover:bg-muted/50 cursor-pointer">
-                           <Flag className="h-4 w-4" />
-                           {selectedEmail?.isStarred ? 'Unflag' : 'Flag'}
-                         </button>
                          <div className="border-t my-1"></div>
                          <button
                            onClick={(e) => {
@@ -717,8 +702,6 @@ function Inbox() {
                 <DropdownMenuContent align="end" className="w-44">
                   <button onClick={() => handleMoreOptions('archive')} className="w-full text-left px-3 py-2 text-sm">Archive</button>
                   <button onClick={() => handleMoreOptions('delete')} className="w-full text-left px-3 py-2 text-sm text-red-600">Delete</button>
-                  <button onClick={() => handleMoreOptions('flag')} className="w-full text-left px-3 py-2 text-sm">{selectedEmail?.isStarred ? 'Unflag' : 'Flag'}</button>
-                  <div className="border-t my-1" />
                   <button onClick={() => handleMoreOptions('copy')} className="w-full text-left px-3 py-2 text-sm">Copy Content</button>
                   <button onClick={() => handleMoreOptions('download')} className="w-full text-left px-3 py-2 text-sm">Download</button>
                   <button onClick={() => handleMoreOptions('print')} className="w-full text-left px-3 py-2 text-sm">Print</button>
